@@ -3,32 +3,42 @@ class Calculator:
         return a + b
 
     def subtract(self, a, b):
-        return b - a
+        return a - b
 
     def multiply(self, a, b):
+        is_negative = False
+        if b < 0:
+            is_negative = True
+            b = -b  # 
+
         result = 0
-        for i in range(b+1):
+
+        for i in range(b):
             result = self.add(result, a)
+        if is_negative:
+            result = -result
+            
         return result
 
     def divide(self, a, b):
+        if b == 0:
+            raise ValueError("Cannot divide by zero")
+        # Handle signs
+        is_negative = (a < 0) != (b < 0)  # True if only one number is negative
+        a, b = abs(a), abs(b)
+        
         result = 0
-        while a > b:
+        while a >= b:
             a = self.subtract(a, b)
-            result += 1
-        return result
-    
-    def modulo(self, a, b):
-        while a <= b:
-            a = a-b
-        return a
+            result = self.add(result, 1)
+            
+        return -result if is_negative else result
 
-# Example usage:
-if __name__ == "__main__":
-    calc = Calculator()
-    print("This is a simple calculator class!")
-    print("Example: addition: ", calc.add(1, 2))
-    print("Example: subtraction: ", calc.subtract(4, 2))
-    print("Example: multiplication: ", calc.multiply(2, 3))
-    print("Example: division: ", calc.divide(10, 2))
-    print("Example: modulo: ", calc.modulo(10, 3))
+    def modulo(self, a, b):
+        if b == 0:
+            raise ValueError("Cannot modulo by zero")
+            
+        while a >= b:
+            a = self.subtract(a, b)
+            
+        return a
